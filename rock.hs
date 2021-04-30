@@ -31,8 +31,12 @@ handCompare choice =
 ioToHand :: [Char] -> Hand
 ioToHand choice = case choice of
   "Rock" -> Rock
+  "rock" -> Rock
   "Scissors" -> Scissors
+  "Scissors" -> Scissors
+  "scissors" -> Scissors
   "Paper" -> Paper
+  "paper" -> Paper
 -- main function that calls specific functions
 main = do
   putStrLn "Choose Rock, Scissors or paper"
