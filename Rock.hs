@@ -1,3 +1,4 @@
+
 import System.Random
 data Hand = Nya | Rock | Paper | Scissors deriving (Show, Eq)
 -- Defining my own instance of Ord, otherwise it would be wrong (Considering how deriving Ord, it compares first letters, so P < R)
@@ -21,12 +22,19 @@ handOpponent = rollNum >>= (
     2 -> return Paper
     3 -> return Scissors
                            )
+
 -- Function that takes Hand as argument, calls handOpponent, and compares your choice with opponent's
 handCompare choice =
   handOpponent >>= (\x -> case compare choice x of
+                                        EQ -> (writeFile "Nya" $ "Enemy's hand is: " ++ (show x) ++ ", Draw")
+                                        LT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Loss")
+                                        GT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Win"))
+handCompare' handOp choice =
+  handOp >>= (\x -> case compare choice x of
                                         EQ -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Draw")
                                         LT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Loss")
                                         GT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Win"))
+
 -- Full function, converst String to Hand data
 ioToHand :: [Char] -> Hand
 ioToHand choice = case choice of
@@ -41,6 +49,7 @@ ioToHand choice = case choice of
 -- main function that calls specific functions
 main =
   putStrLn "Choose Rock, Scissors or paper" >>
+  rollNum >>= \num ->
   getLine >>= \choice ->
   if ioToHand choice == Nya
     then putStrLn "Invalid choice"
