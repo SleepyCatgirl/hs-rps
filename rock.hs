@@ -1,5 +1,5 @@
 import System.Random
-data Hand = Rock | Paper | Scissors deriving (Show, Eq)
+data Hand = Nya | Rock | Paper | Scissors deriving (Show, Eq)
 -- Defining my own instance of Ord, otherwise it would be wrong (Considering how deriving Ord, it compares first letters, so P < R)
 instance Ord Hand where
   compare Rock Paper = LT
@@ -27,29 +27,21 @@ handCompare choice =
                                         EQ -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Draw")
                                         LT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Loss")
                                         GT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Win"))
-
---handCompare choice =
---  choice >>= (\y -> handOpponent >>= (\x -> case compare y x of
---                                        EQ -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Draw")
---                                        LT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Loss")
---                                        GT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Win")))
--- Since getLine results in [Char], lets define function that converts [Char] -> Hand
--- Maybe to see case where we write something else than choice
-ioToHand :: [Char] -> Maybe Hand
+-- Full function, converst String to Hand data
+ioToHand :: [Char] -> Hand
 ioToHand choice = case choice of
-  "Rock" -> Just Rock
-  "rock" -> Just Rock
-  "Scissors" -> Just Scissors
-  "Scissors" -> Just Scissors
-  "scissors" -> Just Scissors
-  "Paper" -> Just Paper
-  "paper" -> Just Paper
-  otherwise -> Nothing
+  "Rock" ->  Rock
+  "rock" ->  Rock
+  "Scissors" ->  Scissors
+  "Scissors" ->  Scissors
+  "scissors" ->  Scissors
+  "Paper" ->  Paper
+  "paper" ->  Paper
+  otherwise -> Nya
 -- main function that calls specific functions
 main =
   putStrLn "Choose Rock, Scissors or paper" >>
   getLine >>= \choice ->
--- I dont know how to make a function that uses iotoHand that is full
-  if ioToHand choice == Nothing then putStr "Nya" else putStr "Nya"
-  --(ioToHand choice >>= handCompare)
-    --ioToHand choice handCompare
+  if ioToHand choice == Nya
+    then putStrLn "Invalid choice"
+    else handCompare $ ioToHand choice
