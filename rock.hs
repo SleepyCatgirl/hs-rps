@@ -25,20 +25,31 @@ handOpponent = rollNum >>= (
 handCompare choice =
   handOpponent >>= (\x -> case compare choice x of
                                         EQ -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Draw")
-                                        LT -> putStrLn (("Enemy's hand is: ") ++ (show x) ++ ", Loss")
-                                        GT -> putStrLn (("Enemy's hand is: ") ++ (show x) ++ ", Win"))
+                                        LT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Loss")
+                                        GT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Win"))
+
+--handCompare choice =
+--  choice >>= (\y -> handOpponent >>= (\x -> case compare y x of
+--                                        EQ -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Draw")
+--                                        LT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Loss")
+--                                        GT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Win")))
 -- Since getLine results in [Char], lets define function that converts [Char] -> Hand
-ioToHand :: [Char] -> Hand
+-- Maybe to see case where we write something else than choice
+ioToHand :: [Char] -> Maybe Hand
 ioToHand choice = case choice of
-  "Rock" -> Rock
-  "rock" -> Rock
-  "Scissors" -> Scissors
-  "Scissors" -> Scissors
-  "scissors" -> Scissors
-  "Paper" -> Paper
-  "paper" -> Paper
+  "Rock" -> Just Rock
+  "rock" -> Just Rock
+  "Scissors" -> Just Scissors
+  "Scissors" -> Just Scissors
+  "scissors" -> Just Scissors
+  "Paper" -> Just Paper
+  "paper" -> Just Paper
+  otherwise -> Nothing
 -- main function that calls specific functions
-main = do
-  putStrLn "Choose Rock, Scissors or paper"
-  choice <- getLine
-  handCompare $ ioToHand choice
+main =
+  putStrLn "Choose Rock, Scissors or paper" >>
+  getLine >>= \choice ->
+-- I dont know how to make a function that uses iotoHand that is full
+  if ioToHand choice == Nothing then putStr "Nya" else putStr "Nya"
+  --(ioToHand choice >>= handCompare)
+    --ioToHand choice handCompare
