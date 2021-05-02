@@ -1,5 +1,5 @@
 import System.Random
-data Hand = Nya | Rock | Paper | Scissors deriving (Show, Eq)
+data Hand = Rock | Paper | Scissors deriving (Show, Eq)
 -- Defining my own instance of Ord, otherwise it would be wrong (Considering how deriving Ord, it compares first letters, so P < R)
 instance Ord Hand where
   compare Rock Paper = LT
@@ -27,21 +27,22 @@ handCompare choice =
                                         EQ -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Draw")
                                         LT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Loss")
                                         GT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Win"))
+  -- a lot of repettion, so lets use where
 -- Full function, converst String to Hand data
-ioToHand :: [Char] -> Hand
+ioToHand :: [Char] -> Maybe Hand
 ioToHand choice = case choice of
-  "Rock" ->  Rock
-  "rock" ->  Rock
-  "Scissors" ->  Scissors
-  "Scissors" ->  Scissors
-  "scissors" ->  Scissors
-  "Paper" ->  Paper
-  "paper" ->  Paper
-  otherwise -> Nya
+  "Rock" -> Maybe Rock
+  "rock" -> Maybe Rock
+  "Scissors" -> Maybe Scissors
+  "Scissors" -> Maybe Scissors
+  "scissors" -> Maybe Scissors
+  "Paper" -> Maybe Paper
+  "paper" -> Maybe Paper
+  _       -> Nothing
+magic x = case x of
+  Just x -> handCompare x
+  Nothing -> putStrLn "Nothing"
 -- main function that calls specific functions
 main =
   putStrLn "Choose Rock, Scissors or paper" >>
-  getLine >>= \choice ->
-  if ioToHand choice == Nya
-    then putStrLn "Invalid choice"
-    else handCompare $ ioToHand choice
+  getLine >>= \choice -> magic (ioToHand choice)
