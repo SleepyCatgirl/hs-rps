@@ -37,9 +37,13 @@ ioToHand choice = case (map toLower choice) of
   "paper" ->  Paper
   otherwise -> Invalid
 -- main function that calls specific functions
-main =
+playRound =
   putStrLn "Choose Rock, Scissors or paper" >>
   getLine >>= \choice ->
   if ioToHand choice == Invalid
-    then putStrLn "Invalid choice"
-    else handCompare $ ioToHand choice
+    then putStrLn "Invalid"
+    else (handCompare $ ioToHand choice) >>
+         main
+main = do
+  playRound
+
