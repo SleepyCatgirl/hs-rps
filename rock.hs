@@ -1,6 +1,6 @@
 import System.Random
 import Data.Char
-data Hand = Nya | Rock | Paper | Scissors deriving (Show, Eq)
+data Hand = Invalid | Rock | Paper | Scissors deriving (Show, Eq)
 -- Defining my own instance of Ord, otherwise it would be wrong
 -- (Considering how deriving Ord, it compares first letters, so P < R)
 instance Ord Hand where
@@ -35,11 +35,11 @@ ioToHand choice = case (map toLower choice) of
   "rock" ->  Rock
   "scissors" ->  Scissors
   "paper" ->  Paper
-  otherwise -> Nya
+  otherwise -> Invalid
 -- main function that calls specific functions
 main =
   putStrLn "Choose Rock, Scissors or paper" >>
   getLine >>= \choice ->
-  if ioToHand choice == Nya
+  if ioToHand choice == Invalid
     then putStrLn "Invalid choice"
     else handCompare $ ioToHand choice
