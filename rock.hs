@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 import System.Random
 import Data.Char
 data Hand = Invalid | Rock | Paper | Scissors deriving (Show, Eq)
@@ -17,21 +18,20 @@ instance Ord Hand where
 rollNum :: IO Int
 rollNum = getStdRandom (randomR (1,3))
 -- Opponent's hand choice based on the RNG defined earlier
-handOpponent = rollNum >>= (
-  \x -> case x of
+handOpponent = rollNum >>=
+  \case
     1 -> return Rock
     2 -> return Paper
     3 -> return Scissors
-                           )
 -- Function that takes Hand as argument, calls handOpponent, and compares your choice with opponent's
 handCompare choice =
   handOpponent >>= (\x -> case compare choice x of
-                                        EQ -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Draw")
-                                        LT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Loss")
-                                        GT -> putStrLn ("Enemy's hand is: " ++ (show x) ++ ", Win"))
+                                        EQ -> putStrLn ("Enemy's hand is: " ++ show x ++ ", Draw")
+                                        LT -> putStrLn ("Enemy's hand is: " ++ show x ++ ", Loss")
+                                        GT -> putStrLn ("Enemy's hand is: " ++ show x ++ ", Win"))
 -- Full function, converst String to Hand data
-ioToHand :: [Char] -> Hand
-ioToHand choice = case (map toLower choice) of
+ioToHand :: String -> Hand
+ioToHand choice = case map toLower choice of
   "rock" ->  Rock
   "scissors" ->  Scissors
   "paper" ->  Paper
@@ -42,8 +42,7 @@ playRound =
   getLine >>= \choice ->
   if ioToHand choice == Invalid
     then putStrLn "Invalid"
-    else (handCompare $ ioToHand choice) >>
+    else handCompare  (ioToHand choice) >>
          main
-main = do
+main =
   playRound
-
