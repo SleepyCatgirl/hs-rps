@@ -20,19 +20,19 @@ rollNum = getStdRandom (randomR (1,3))
 -- Opponent's hand choice based on the RNG defined earlier
 handOpponent :: IO Hand
 handOpponent = rollNum >>=
-  \case
-    1 -> return Rock
-    2 -> return Paper
-    3 -> return Scissors
+  \x -> return $ case x of
+    1 -> Rock
+    2 -> Paper
+    3 -> Scissors
 -- Function that takes Hand as argument, and enemy roll , and compares your choice with opponent's
 --      and then subsequently use it
 handCompare :: Hand -> Hand -> IO ()
 handCompare choice opChoice =
   let enemyStr = "Enemy's hand is: " ++ show opChoice in
-    case compare choice opChoice  of
-      EQ -> putStrLn (enemyStr ++ ", Draw")
-      LT -> putStrLn (enemyStr ++ ", Loss")
-      GT -> putStrLn (enemyStr ++ ", Win")
+    putStrLn $ case compare choice opChoice  of
+      EQ -> enemyStr ++ ", Draw"
+      LT -> enemyStr ++ ", Loss"
+      GT -> enemyStr ++ ", Win"
 -- Write score
 writeHandCompare choice opChoice =
   let write = appendFile "Score.txt" in

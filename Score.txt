@@ -1,6 +1,3 @@
-Loss
-Loss
-Loss
-Loss
-Draw
 Win
+Draw
+Loss
