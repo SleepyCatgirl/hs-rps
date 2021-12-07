@@ -1,4 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
 import System.Random
 import Data.Char
 data Hand = Invalid | Rock | Paper | Scissors deriving (Show, Eq)
