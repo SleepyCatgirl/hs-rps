@@ -14,3 +14,16 @@ Draw
 Loss
 Win
 Win
+Win
+Win
+Draw
+Loss
+Loss
+Loss
+Loss
+Draw
+Draw
+Win
+Loss
+Win
+Loss

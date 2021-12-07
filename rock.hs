@@ -1,18 +1,20 @@
 import System.Random
 import Data.Char
+import GHC.Types (Ordering)
 data Hand = Invalid | Rock | Paper | Scissors deriving (Show, Eq)
 -- Defining my own instance of Ord, otherwise it would be wrong
 -- (Considering how deriving Ord, it compares first letters, so P < R)
 instance Ord Hand where
   compare Rock Paper = LT
-  compare Rock Scissors = GT
-  compare Rock Rock = EQ
-  compare Paper Rock = GT
-  compare Paper Paper = EQ
   compare Paper Scissors = LT
   compare Scissors Rock = LT
-  compare Scissors Paper = GT
-  compare Scissors Scissors = EQ
+  compare x        y
+    | x == y    = EQ
+    | otherwise = flipOrder $ compare y x
+flipOrder :: Ordering -> Ordering
+flipOrder LT = GT
+flipOrder GT = LT
+flipOrder EQ = EQ
 -- Roll random number, between 1 and 3
 rollNum :: IO Int
 rollNum = getStdRandom (randomR (1,3))
