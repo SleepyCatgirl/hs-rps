@@ -18,12 +18,14 @@ instance Ord Hand where
 rollNum :: IO Int
 rollNum = getStdRandom (randomR (1,3))
 -- Opponent's hand choice based on the RNG defined earlier
+handOpponent :: IO Hand
 handOpponent = rollNum >>=
   \case
     1 -> return Rock
     2 -> return Paper
     3 -> return Scissors
 -- Function that takes Hand as argument, calls handOpponent, and compares your choice with opponent's
+handCompare :: Hand -> IO ()
 handCompare choice =
   handOpponent >>= (\x -> let enemyStr = "Enemy's hand is: " ++ show x in
                       case compare choice x of
@@ -38,6 +40,7 @@ ioToHand choice = case map toLower choice of
   "paper" ->  Paper
   _ -> Invalid
 -- main function that calls specific functions
+playRound :: IO ()
 playRound =
   putStrLn "Choose Rock, Scissors or paper" >>
   getLine >>= \choice ->
@@ -45,5 +48,7 @@ playRound =
     then putStrLn "Invalid"
     else handCompare  (ioToHand choice) >>
          main
+
+main :: IO ()
 main =
   playRound
