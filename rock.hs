@@ -25,17 +25,18 @@ handOpponent = rollNum >>=
     3 -> return Scissors
 -- Function that takes Hand as argument, calls handOpponent, and compares your choice with opponent's
 handCompare choice =
-  handOpponent >>= (\x -> case compare choice x of
-                                        EQ -> putStrLn ("Enemy's hand is: " ++ show x ++ ", Draw")
-                                        LT -> putStrLn ("Enemy's hand is: " ++ show x ++ ", Loss")
-                                        GT -> putStrLn ("Enemy's hand is: " ++ show x ++ ", Win"))
+  handOpponent >>= (\x -> let enemyStr = "Enemy's hand is: " ++ show x in
+                      case compare choice x of
+                                        EQ -> putStrLn (enemyStr ++ ", Draw")
+                                        LT -> putStrLn (enemyStr ++ ", Loss")
+                                        GT -> putStrLn (enemyStr ++ ", Win"))
 -- Full function, converst String to Hand data
 ioToHand :: String -> Hand
 ioToHand choice = case map toLower choice of
   "rock" ->  Rock
   "scissors" ->  Scissors
   "paper" ->  Paper
-  otherwise -> Invalid
+  _ -> Invalid
 -- main function that calls specific functions
 playRound =
   putStrLn "Choose Rock, Scissors or paper" >>
