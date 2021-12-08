@@ -8,6 +8,7 @@ instance Ord Hand where
   compare Rock Paper = LT
   compare Paper Scissors = LT
   compare Scissors Rock = LT
+  compare Invalid _ = EQ -- To make it properly full instance
   compare x        y
     | x == y    = EQ
     | otherwise = flipOrder $ compare y x
