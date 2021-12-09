@@ -1,6 +1,8 @@
 import System.Random
 import Data.Char
-import GHC.Types (Ordering)
+import Data.Sort
+import Data.List
+import System.IO
 data Hand = Invalid | Rock | Paper | Scissors deriving (Show, Eq)
 -- Defining my own instance of Ord, otherwise it would be wrong
 -- (Considering how deriving Ord, it compares first letters, so P < R)
@@ -19,16 +21,27 @@ flipOrder EQ = EQ
 -- abstract types a bit for aesthics and clarity
 type RandInt = IO Int
 type Result = IO ()
+type Weight = Int
 -- Roll random number, between 1 and 3
 rollNum :: RandInt
 rollNum = getStdRandom (randomR (1,3))
+-- Start of weightened rolls for 'AI'
+weightRoll :: Weight -> RandInt
+weightRoll a = rollNum >>= \x ->
+  if x /= a then rollNum else return x
 -- Opponent's hand choice based on the RNG defined earlier
-handOpponent :: IO Hand
-handOpponent = rollNum >>=
-  \x -> return $ case x of
+handOpponent :: Int -> Hand
+handOpponent x =
+  case x of
     1 -> Rock
     2 -> Paper
     3 -> Scissors
+-- Reverse of previous function, for weightened rolls
+numHand :: Hand -> Int
+numHand hand = case hand of
+  Rock -> 1
+  Paper -> 2
+  Scissors -> 3
 -- Function that takes Hand as argument, and enemy roll , and compares your choice with opponent's
 --      and then subsequently use it
 handCompare :: Hand -> Hand -> Result
@@ -38,6 +51,7 @@ handCompare choice opChoice =
       EQ -> enemyStr ++ ", Draw"
       LT -> enemyStr ++ ", Loss"
       GT -> enemyStr ++ ", Win"
+
 -- Write score
 writeHandCompare :: Hand -> Hand -> Result
 writeHandCompare choice opChoice =
@@ -47,6 +61,27 @@ writeHandCompare choice opChoice =
       LT -> write "Loss\n"
       GT -> write "Win\n"
 
+-- Keep track of user choice
+writeHand :: Hand -> IO ()
+writeHand choice =
+  let write = appendFile ".hand.txt" in
+    let newLine a = a ++ "\n" in
+      write $ newLine $ show $ numHand choice
+
+-- helper function
+longerList :: Ord a => [a] -> [a] -> [a]
+longerList a b =
+  case compare (length a) (length b) of
+    EQ -> a
+    LT -> b
+    GT -> a
+-- read hand
+readHand :: IO Int
+readHand = do
+  handle <- readFile ".hand.txt"
+  let intList x = map read $ lines x in
+    let findBig x = group $ sort x in
+      return (head $ foldr longerList [] (findBig $ intList handle))
 -- Full function, converst String to Hand data
 ioToHand :: String -> Hand
 ioToHand choice = case map toLower choice of
@@ -68,9 +103,11 @@ playRound enemy =
     then putStrLn "Invalid"
     else handCompare (ioToHand choice) enemy >>
          writeHandCompare (ioToHand choice) enemy >>
+         writeHand (ioToHand choice) >>
          main
 -- said main fn
 main :: IO ()
 main =
-  handOpponent >>= \enemy ->
-  playRound enemy
+  readHand >>= \weight ->
+  weightRoll weight >>= \roll ->
+  playRound (handOpponent roll)
