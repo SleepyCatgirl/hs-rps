@@ -27,3 +27,7 @@ Win
 Loss
 Win
 Loss
+Win
+Loss
+Draw
+Loss

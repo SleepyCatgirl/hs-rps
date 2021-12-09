@@ -16,8 +16,11 @@ flipOrder :: Ordering -> Ordering
 flipOrder LT = GT
 flipOrder GT = LT
 flipOrder EQ = EQ
+-- abstract types a bit for aesthics and clarity
+type RandInt = IO Int
+type Result = IO ()
 -- Roll random number, between 1 and 3
-rollNum :: IO Int
+rollNum :: RandInt
 rollNum = getStdRandom (randomR (1,3))
 -- Opponent's hand choice based on the RNG defined earlier
 handOpponent :: IO Hand
@@ -28,7 +31,7 @@ handOpponent = rollNum >>=
     3 -> Scissors
 -- Function that takes Hand as argument, and enemy roll , and compares your choice with opponent's
 --      and then subsequently use it
-handCompare :: Hand -> Hand -> IO ()
+handCompare :: Hand -> Hand -> Result
 handCompare choice opChoice =
   let enemyStr = "Enemy's hand is: " ++ show opChoice in
     putStrLn $ case compare choice opChoice  of
@@ -36,13 +39,13 @@ handCompare choice opChoice =
       LT -> enemyStr ++ ", Loss"
       GT -> enemyStr ++ ", Win"
 -- Write score
+writeHandCompare :: Hand -> Hand -> Result
 writeHandCompare choice opChoice =
   let write = appendFile "Score.txt" in
     case compare choice opChoice  of
       EQ -> write "Draw\n"
       LT -> write "Loss\n"
       GT -> write "Win\n"
-
 
 -- Full function, converst String to Hand data
 ioToHand :: String -> Hand
